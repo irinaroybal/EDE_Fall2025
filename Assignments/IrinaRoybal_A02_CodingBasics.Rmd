@@ -40,7 +40,8 @@ mean(count.by.fives) #determining the mean of the numeric vector
 
 median(count.by.fives) #determining the median of the numeric vector
 #3. 
-mean(count.by.fives)>median(count.by.fives)
+mean(count.by.fives)>median(count.by.fives) 
+#determining if mean is greater than median, output is FALSE in console
 ```
 
 ## Basics, Part 2
@@ -54,8 +55,17 @@ mean(count.by.fives)>median(count.by.fives)
 8.  Label the columns of your data frame with informative titles.
 
 ```{r basics 2}
+student.names <- c("Gabby", "Adam", "Edward", "Lionel") 
+#column with student names, string vector type
+test.scores <- c(87, 72, 98, 86) 
+#column with test scores, numeric vector type
+scholarship <- c(FALSE, TRUE, TRUE, FALSE)
+#column with scholarship status, logical vector type
 
-
+student_statuses <- data.frame("Student Name"= student.names,
+                        "Test Scores" = test.scores,
+                        "Scholarship Status" = scholarship)
+student_statuses
 ```
 
 9.  QUESTION: How is this data frame different from a matrix?
