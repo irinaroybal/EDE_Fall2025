@@ -32,11 +32,15 @@ This exercise accompanies the lessons/labs in Environmental Data Analytics on co
 
 ```{r basics 1}
 #1. 
-
+seq(1,55,5) #creating a sequence with values from 1 to 55, counting by 5
+count.by.fives <- seq(1,55,5) #naming the sequence
+count.by.fives #checking result
 #2. 
+mean(count.by.fives) #determining the mean of the numeric vector
 
+median(count.by.fives) #determining the median of the numeric vector
 #3. 
-
+mean(count.by.fives)>median(count.by.fives)
 ```
 
 ## Basics, Part 2
