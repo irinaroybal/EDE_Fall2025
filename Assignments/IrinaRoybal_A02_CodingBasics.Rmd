@@ -70,7 +70,7 @@ student_statuses
 
 9.  QUESTION: How is this data frame different from a matrix?
 
-> Answer:
+> Answer: Data frames contain multiple types of data (logical, numeric, and string). Matrices can only support data that is of the same class.
 
 10. Create a function with one input. In this function, use `if`...`else` to evaluate the value of the input: if it is greater than 50, print the word "Pass"; otherwise print the word "Fail". 
 
@@ -82,21 +82,31 @@ student_statuses
 
 ```{r basics 3}
 #10. Create a function using if...else
-
+function1 <- function (x){
+  if (x>50){
+    print("Pass")
+  }
+  else{
+   print("Fail") 
+  }
+}
 #11. Create a function using ifelse()
-
+function2 <- function(x){
+  ifelse(x>50,"Pass", "Fail") 
+}
 #12a. Run the first function with the value 52.5
-
+function1(52.5)
 #12b. Run the second function with the value 52.5
-
+function2(52.5)
 #13a. Run the first function with the vector of test scores
-
+#function1(test.scores)
 #13b. Run the second function with the vector of test scores
+function2(test.scores)
 ```
 
 14. QUESTION: Which option of `if`...`else` vs. `ifelse` worked? Why? (Hint: search the web for "R vectorization")
 
-> Answer:
+> Answer: 'ifelse' is the only function that worked because 'if'...'else' only works for single values. The 'ifelse' function is vectorized, so it supports multiple inputs within a vector.
 
 
 **NOTE** Before knitting, you'll need to comment out the call to the function in Q13 that does not work. (A document can't knit if the code it contains causes an error!)
