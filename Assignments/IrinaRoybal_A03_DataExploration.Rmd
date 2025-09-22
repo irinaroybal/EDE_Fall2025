@@ -95,9 +95,8 @@ sort(table(Neonics$Effect), decreasing = TRUE
 7.  Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.[TIP: Explore the help on the `summary()` function, in particular the `maxsum` argument...]
 
 ```{r Q7}
-summary(Neonics$Species.Common.Name)
-sort(table(Neonics$Species.Common.Name), decreasing = TRUE
-    )
+summary(Neonics$Species.Common.Name, maxsum = 5)
+head(sort(table(Neonics$Species.Common.Name), decreasing = TRUE), 5)
 ```
 
 > Answer: Honey Bees, Parasitic Wasps, Buff Tailed Bumblebees, Carniolan Honey Bees, Bumble Bees, and Italian Honeybees are the six most commonly studied species in the dataset. These species are all important pollinators, which is why they are of special interest over other insect species. Researchers want to know what effect neonicotinoids have on these integral species.
@@ -116,68 +115,85 @@ view(Neonics)
 9.  Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year.
 
 ```{r Q9}
-geom_freqpoly()
+ggplot(data = Neonics,
+        aes(Publication.Year))+
+  geom_freqpoly()
 
 ```
 
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 
 ```{r Q10}
-
+ggplot(data = Neonics,
+       aes(x = Publication.Year, 
+                     color = Test.Location))+
+  geom_freqpoly()
 
 ```
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
 
-> Answer:
+> Answer: The most common test location is in a laboratory setting. In the 1990s, testing in the field in a natural environment was the most common. By the 2000s, laboratory tests were more favored than natural field sites but both grew in popularity. In the 2000s, there appears to be a slight interest in artificially simulating field conditions for tests, though not nearly as many of these types of studies as with lab or natural field sites. By the 2010s, lab tests shot up, tripling in number of tests. By the end of the 2010s, publications with lab tests and natural field tests plummeted to zero.
 
 11. Create a bar graph of Endpoint counts. What are the two most common end points, and how are they defined? Consult the ECOTOX_CodeAppendix for more information. 
 
 [**TIP**: Add `theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))` to the end of your plot command to rotate and align the X-axis labels...]
 
 ```{r Q11}
-
-
+ggplot( data = Neonics,
+        aes(Endpoint))+
+  geom_bar()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
 
-> Answer:
+> Answer: The two most common endpoints are NOEL and LOEL. NOEL is defined as "No-observable-effect-level" meaning that even the highest dosage tested had no significant effects relative to the control. LOEL stands for "lowest-observable-effect-level", which means that the lowest dose tested had significantly different effects on the subject relative to the control.
 
 ## Explore your data (Litter)
 
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018.
 
 ```{r Q12}
+class(Litter$collectDate)
+Litter$collectDate <- as.Date(Litter$collectDate)
+class(Litter$collectDate)
 
-
+unique(Litter$collectDate, incomparables = FALSE)
 ```
 
 13. Using the `unique` function, list the different plotIDs sampled at Niwot Ridge. How is the information obtained from `unique` different from that obtained from `summary`?
 
 ```{r Q13}
-
-
+unique(Litter$plotID)
+summary(Litter$plotID)
 ```
 
-> Answer:
+> Answer: The 'unique' function just tells the viewer unique values within plotIDs as well as "Levels", which reports the number of said unique values (in this case, 12). The 'summary' command displays both IDs and their frequency of occurance within the data.
 
 14. Create a bar graph of functionalGroup counts. This shows you what type of litter is collected at the Niwot Ridge sites. Notice that litter types are fairly equally distributed across the Niwot Ridge sites.
 
 ```{r Q14}
-
+ggplot( data = Litter, 
+        aes(functionalGroup))+
+  geom_bar()
 
 ```
 
 15. Using `geom_boxplot` and `geom_violin`, create a boxplot and a violin plot of dryMass by functionalGroup.
 
 ```{r Q15}
+ggplot(data = Litter,
+       aes(dryMass, functionalGroup))+
+  geom_boxplot()
 
-
+ggplot(data = Litter,
+       aes(dryMass, functionalGroup))+
+  geom_violin()
 ```
 
 Why is the boxplot a more effective visualization option than the violin plot in this case?
 
-> Answer:
+> Answer: The boxplot is a more effective visualization option than a violin plot because box plots show where data is most concentrated, the median of functional group dry mass, as well as outliers. The violin plot doesn't display density of values, thus potentially misrepresenting where the most values lie. If we relied soley on the violin plot, we would have mistakenly found that twigs/branches are the second highest biomass source at the sites due to a few outliers.
 
 What type(s) of litter tend to have the highest biomass at these sites?
 
-> Answer:
+> Answer: Overall, needles tend to have the highest biomass, followed by mixed litter.
