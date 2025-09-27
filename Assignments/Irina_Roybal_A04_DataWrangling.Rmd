@@ -42,7 +42,8 @@ EPAair_O3_NC2018_raw <-
            stringsAsFactors = TRUE)
 
 EPAair_O3_NC2019_raw <- 
-  read.csv("/home/guest/GITClone/EDE_Fall2025/Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
+  read.csv("/home/guest/GITClone/EDE_Fall2025/Data/Raw/EPAair_O3_NC2019_raw.csv", 
+           stringsAsFactors = TRUE)
 
 EPAair_PM25_NC2018_raw <- 
   read.csv("/home/guest/GITClone/EDE_Fall2025/Data/Raw/EPAair_PM25_NC2018_raw.csv",
@@ -185,19 +186,51 @@ write.csv(EPAair_PM25_NC2019_raw_select,
 
 ```{r questions 7 thru 11}
 #7 
+EPAair_O3_NC2018_processed <- 
+  read.csv("/home/guest/GITClone/EDE_Fall2025/Data/Processed/EPAair_O3_NC2018_processed.csv",
+           stringsAsFactors=TRUE)
 
+EPAair_O3_NC2019_processed <- 
+  read.csv("/home/guest/GITClone/EDE_Fall2025/Data/Processed/EPAair_O3_NC2019_processed.csv",
+           stringsAsFactors=TRUE)
+
+EPAair_PM25_NC2018_processed <- 
+  read.csv("/home/guest/GITClone/EDE_Fall2025/Data/Processed/EPAair_PM25_NC2018_processed.csv",
+           stringsAsFactors=TRUE)
+
+EPAair_PM25_NC2019_processed <- 
+  read.csv("/home/guest/GITClone/EDE_Fall2025/Data/Processed/EPAair_PM25_NC2019_processed.csv", stringsAsFactors=TRUE)
+
+EPAair_data <- 
+  rbind(EPAair_O3_NC2018_processed, 
+      EPAair_O3_NC2019_processed, 
+      EPAair_PM25_NC2018_processed,
+      EPAair_PM25_NC2019_processed)
 
 #8 
-
+EPAair_data_sites <- EPAair_data %>%
+  filter(Site.Name %in% c("Linville Falls","Durham Armory","Leggett","Hattie Avenue","Clemmons Middle", "Mendenhall School","Frying Pan Mountain","West Johnston Co.","Garinger High School","Castle Hayne","Pitt Agri. Center","Bryson City","Millbrook School"))%>%
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
+  filter(!is.na(DAILY_AQI_VALUE) & !is.na(SITE_LATITUDE) & !is.na(SITE_LONGITUDE)) %>%
+  summarise(meanAQI = mean(DAILY_AQI_VALUE),
+            meanlat = mean(SITE_LATITUDE),
+            meanlong = mean(SITE_LONGITUDE))%>%
+  mutate(Year = year(Date) ) %>%
+  mutate(Month = month(Date))
 
 #9
-
+EPAair_data_sites <- 
+  pivot_wider(EPAair_data_sites,
+              names_from= AQS_PARAMETER_DESC,
+              values_from= meanAQI )
 
 #10
-
+dim(EPAair_data_sites)
 
 #11
-
+write.csv(EPAair_data_sites, 
+          row.names = FALSE,
+          "/home/guest/GITClone/EDE_Fall2025/Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv")
 
 ```
 
@@ -211,15 +244,23 @@ write.csv(EPAair_PM25_NC2019_raw_select,
 ```{r questions 12 and 13}
 
 #12
+EPAair_O3_PM25_NC1819_processed <- 
+  read.csv("/home/guest/GITClone/EDE_Fall2025/Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv")
 
+EPAair_O3_PM25_NC1819_processed <- 
+  EPAair_O3_PM25_NC1819_processed %>%
+  group_by(Site.Name, Month, Year) %>%
+  summarise(meanOzone = mean(Ozone),
+            meanPM25 = mean(PM2.5))%>%
+  drop_na(meanOzone)
 
 #13
 
-
+dim(EPAair_O3_PM25_NC1819_processed)
 
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`? Hint: replace `drop_na` with `na.omit` in part 12 and observe what happens with the dimensions of the summary date frame.
 
-> Answer: 
+> Answer: We used the function 'drop_na' over 'na.omit' because 'na.omit' deleted any rows that contained NAs, leaving only rows that had values in every single column. Because we wanted to retain any data regarding meanOzone, we opted for the 'drop_na', which only got rid of rows with no meanOzone data. This resulted in the retention of PM2.5 rows with NAs, so long as they also contained mean Ozone data.
 
