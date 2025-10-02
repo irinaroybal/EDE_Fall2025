@@ -74,8 +74,9 @@ ggsave(
 *Note the use of a string variable the points to the location of the data combined with the `here()` package functionality. This enables us to quickly change where we get our data, i.e., by changing one line of code vs each `read.csv()` command.* 
 
 ```{r, message = FALSE, warning = FALSE}
-#Assign a variable to the processed data folder location
-processed_data = here("Data/Processed_KEY")
+#Assign a variable to the processed data folder location 
+
+processed_data = ("Data/Processed_KEY")
 
 #Read in data
 PeterPaul.chem.nutrients <- read.csv(
@@ -239,8 +240,20 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Plot surface temperatures by day of  year. 
 # Color your points by year, and facet by lake in two rows.
 # Change the ylab name
-
-
+PeterPaul.chem.nutrients %>% 
+  filter(depth == 0) %>% 
+  ggplot(
+    mapping = aes(
+      x=daynum,
+      y=temperature_C,
+      color= year4)
+    ) + 
+  geom_point()+
+  facet_wrap(facets= vars(lakename),
+               nrow=2)+
+  ylab("Temperature")+
+  labs(color="Year")
+  
 #2. 
 # Plot temperature by date. Color your points by depth.
 # Change the size of your point to 0.5
