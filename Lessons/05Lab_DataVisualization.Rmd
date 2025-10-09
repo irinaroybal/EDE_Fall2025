@@ -260,7 +260,20 @@ PeterPaul.chem.nutrients %>%
 # Change the color palette to magma and play with direction (+- 1), which one makes more sense?
 # Change x axis to include marker/labels every 5 years
 
-
+PeterPaul.chem.nutrients%>%
+   ggplot(
+    mapping = aes(
+      x=sampledate,
+      y=temperature_C,
+      color= depth)
+    ) + 
+  geom_point(size=0.5)+
+  scale_color_viridis(option="magma", direction= -1)+
+  ylab("Temperature")+
+  xlab("Date")+
+  labs(title = "Lake Temp by Date",
+    color="Depth")
+  
 
 ```
 ## Plotting the relationship between two continuous variables: Scatterplot
@@ -274,7 +287,17 @@ Exercise: Plot relationships between air quality measurements
 # Make the points 50 % transparent
 # Add a line of best fit for the linear regression of these variables.
 
-
+EPAair%>%
+   ggplot(
+    mapping = aes(
+      x=PM2.5,
+      y=Ozone,
+      color= mean_Lat)
+    ) + 
+  geom_point(alpha=0.5)+
+  geom_smooth(method = lm)+
+  ylab("Ozone")+
+  xlab("PM2.5")
 
 
 ```

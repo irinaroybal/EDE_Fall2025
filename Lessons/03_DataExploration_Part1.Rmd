@@ -133,6 +133,9 @@ USGS.flow.data <- read.csv(
 # What happens if we don't assign a name to our imported dataset?
 read.csv(here("./Data/Raw/USGS_Site02085000_Flow_Raw.csv"),stringsAsFactors = TRUE)
 
+
+read.csv(here('Data/Raw/USGS_Site02085000_Flow_Raw.csv',
+         stringsAsFactors = TRUE))
 ```
 
 >Tip: Use autocomplete in the console instead of typing in the path...
