@@ -156,7 +156,7 @@ If the interaction is significant, we interpret pairwise differences for the int
 ```{r}
 # Run a post-hoc test for pairwise differences
 TukeyHSD(Litter.anova.2way3)
-
+ 
 Litter.interaction <- with(Litter, interaction(functionalGroup, nlcdClass))
 
 #Litter.test <- cbind(Litter,Litter.interaction)

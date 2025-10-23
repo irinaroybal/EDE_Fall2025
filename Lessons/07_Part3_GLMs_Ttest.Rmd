@@ -14,7 +14,7 @@ editor_options:
 ## Set up your session
 
 ```{r, message = FALSE}
-library(tidyverse)
+library(tidyverse) 
 library(lubridate)
 library(here)
 here()
