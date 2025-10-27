@@ -270,7 +270,7 @@ TukeyHSD(Lake_ChemPhys_ANOVA)
 ```{r t.test}
 ChemPhys_Crampton_Ward <- 
   Lake_ChemPhys%>%
-  filter(lakename %in% c("Crampton Lake", "Ward Lake"))
+  filter(lakename == c("Crampton Lake", "Ward Lake"))
 
 ChemPhys_Crampton_Ward
 
@@ -281,4 +281,4 @@ Crampton_Ward_ttest <- t.test(ChemPhys_Crampton_Ward$temperature_C
 Crampton_Ward_ttest
 ```
 
->Answer: This test says that the p-value for this relationship is 0.2649. The mean temperature for Crampton Lake is 15.35 degrees C and the mean temperature for Ward Lake is 14.45 degrees C (unequal). This result does not match my answer for part 16. The post-hoc test found that the p-value between Crampton Lake and Ward Lake was 0.9714459. However, both values are statistically insignificant, so in practice, this doesn't change our acceptance of the null hypothesis in terms of the mean temperature of these two lakes. In other words, the mean July temperature of Crampton and Ward Lake is the same.
+>Answer: This test says that the p-value for this relationship is 0.3263. The mean temperature for Crampton Lake is 15.37 degrees C and the mean temperature for Ward Lake is 14.25 degrees C (unequal). This result does not match my answer for part 16. The post-hoc test found that the p-value between Crampton Lake and Ward Lake was 0.9714459. However, both values are statistically insignificant, so in practice, this doesn't change our acceptance of the null hypothesis in terms of the mean temperature of these two lakes. In other words, the mean July temperature of Crampton and Ward Lake is the same.
