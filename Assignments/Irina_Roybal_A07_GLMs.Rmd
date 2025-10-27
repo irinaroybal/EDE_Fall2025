@@ -165,6 +165,13 @@ library(dplyr)
 install.packages("corrplot")
 library(corrplot)
 
+Lake_ChemPhys_AIC<- lm(data = Lake_ChemPhys_sub,
+temperature_C ~ depth + daynum + year4)
+
+step(Lake_ChemPhys_AIC)
+
+#Corrplot for fun
+
 Lake_ChemPhys_sub <-
 Lake_ChemPhys %>% 
   select(temperature_C:year4) %>% 
@@ -181,7 +188,7 @@ corrplot.mixed(Lake_ChemPhys_Corr,
 #10
 
 Lake_ChemPhys_BestRegression<- lm(data = Lake_ChemPhys_sub,
-temperature_C ~ depth + daynum)
+temperature_C ~ depth + daynum + year4)
 
 summary(Lake_ChemPhys_BestRegression)
 
@@ -189,7 +196,7 @@ summary(Lake_ChemPhys_BestRegression)
 
 11. What is the final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression? How much of the observed variance does this model explain? Is this an improvement over the model using only depth as the explanatory variable?
 
-> Answer: The final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression are depth and daynum. This model explains 74.1% of the observed variance with an R-squared value of 0.741. This is a slight improvement over the model using only depth, as that previous model could explain ~0.23% less of the observed variance. 
+> Answer: The final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression are depth, daynum, and year4. This model explains 74.1% of the observed variance with an R-squared value of 0.741. This is a slight improvement over the model using only depth, as that previous model could explain ~0.23% less of the observed variance. 
 
 ---
 ## Analysis of Variance
