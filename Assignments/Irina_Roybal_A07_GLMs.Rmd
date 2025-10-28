@@ -162,8 +162,13 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 ```{r temperature.model}
 #9
 library(dplyr)
-install.packages("corrplot")
+#install.packages("corrplot")
 library(corrplot)
+
+Lake_ChemPhys_sub <-
+ Lake_ChemPhys %>% 
+  select(temperature_C:year4) %>% 
+ na.omit() 
 
 Lake_ChemPhys_AIC<- lm(data = Lake_ChemPhys_sub,
 temperature_C ~ depth + daynum + year4)
@@ -171,11 +176,6 @@ temperature_C ~ depth + daynum + year4)
 step(Lake_ChemPhys_AIC)
 
 #Corrplot for fun
-
-Lake_ChemPhys_sub <-
-Lake_ChemPhys %>% 
-  select(temperature_C:year4) %>% 
-  na.omit()
 
 Lake_ChemPhys_Corr <- cor(Lake_ChemPhys_sub)
 
@@ -200,6 +200,7 @@ summary(Lake_ChemPhys_BestRegression)
 
 ---
 ## Analysis of Variance
+
 
 12. Now we want to see whether the different lakes have, on average, different temperatures in the month of July. Run an ANOVA test to complete this analysis. (No need to test assumptions of normality or similar variances.) Create two sets of models: one expressed as an ANOVA models and another expressed as a linear model (as done in our lessons).
 
@@ -226,6 +227,7 @@ summary(Lake_ChemPhys_LM)
 
 ```{r scatterplot.2}
 #14.
+library(ggplot2)
 Lake_ChemPhys_Plot2 <-
   ggplot(Lake_ChemPhys, 
          aes(x = depth,
@@ -233,8 +235,8 @@ Lake_ChemPhys_Plot2 <-
              color = lakename)) +
   geom_point(alpha = 0.5) + 
   geom_smooth(method = "lm",
-              se = TRUE,
-              color = "magenta") +
+              se = FALSE,
+              aes(color = lakename)) +
   xlim(0,20)+
   ylim(0,35)+
   labs(
