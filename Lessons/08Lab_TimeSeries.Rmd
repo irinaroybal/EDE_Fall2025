@@ -16,16 +16,15 @@ editor_options:
 ## Set up
 
 ```{r, message = FALSE}
-
 library(tidyverse)
 library(lubridate)
-#install.packages("trend")
+install.packages("trend")
 library(trend)
-#install.packages("zoo")
+install.packages("zoo")
 library(zoo)
-#install.packages("Kendall")
+install.packages("Kendall")
 library(Kendall)
-#install.packages("tseries")
+install.packages("tseries")
 library(tseries)
 library(here)
 here
@@ -83,17 +82,24 @@ BR_complete <- inner_join(Rainfall_BR_processed,Temp_BR_processed)
 ```{r}
 
 #Exercise 5: Check if there is any missing data for both temperature and rainfall series.
+summary(BR_complete$Temperature_C)
 
-
+summary(BR_complete$Rainfall)
 
 
 #Exercise 6: Plot both series over time on separate plots. Add a trend line using geom_smooth(). Can you say something about the trend just by visualizing the data?
 
+Temp_Time <- ggplot(BR_complete, aes(x=BR_complete$Date,
+                        y=BR_complete$Temperature_C)) +
+         geom_smooth(method ='lm')
 
+Temp_Time
 
+Rain_Time <- ggplot(BR_complete, aes(x=Date,
+                        y=Rainfall)) +
+         geom_smooth(method ='lm')
 
-
-
+Rain_Time
 ```
 
 ## Creating time series objects
