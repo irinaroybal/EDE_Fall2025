@@ -33,7 +33,7 @@ This exercise accompanies the lessons in Environmental Data Analytics (ENV872L) 
 library(tidyverse)
 library(sf)
 library(here)
-library(mapview)
+#library(mapview)
 
 #2. 
 
@@ -58,7 +58,8 @@ nebraska.counties <- st_read("Data/Spatial/cb_2018_us_county_20m.shp")%>%
 st_crs(nebraska.counties)
 
 #5. Plot the data
-mapView(nebraska.counties)
+#mapView(nebraska.counties)
+plot(nebraska.counties)
 
 ```
 
@@ -165,7 +166,7 @@ flow.data <-
 
 #15. Show the structure of the dataframe 
 
-glimpse(gage.heights)
+glimpse(flow.data)
 
 #16. Join the flow data to our NWIS gage location spatial dataframe
 
@@ -192,6 +193,7 @@ Now we can examine where the flooding appears most acute by visualizing gage hei
 
 ```{r map gage sites}
 #Map the points, sized by gage height
+library(viridis)
 
 gage.height.plot <- 
   ggplot() + 
