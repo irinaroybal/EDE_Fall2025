@@ -426,8 +426,7 @@ triCo <- counties_sf_utm %>%
 
   
 #Grab the intersecting HUC_8s
-huc8_sf_utm %>% st_filter(triCo) %>% mapview() 
-
+counties_sf_utm %>% st_filter(triCo) %>% mapview() 
 
 #Intersect the HUC_8s
 huc8_sf_utm %>% st_intersection(triCo) %>% mapview()
