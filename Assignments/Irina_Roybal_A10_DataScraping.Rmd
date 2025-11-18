@@ -1,6 +1,6 @@
 ---
 title: "Assignment 10: Data Scraping"
-author: "Student Name"
+author: "Irina Roybal"
 output: pdf_document
 editor_options: 
   chunk_output_type: console
@@ -27,7 +27,9 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 
 ```{r 1. Project Setup, message = FALSE}
 #1 
-
+getwd()
+library(tidyverse)
+library(rvest)
 
 ```
 
@@ -40,7 +42,8 @@ Indicate this website as the as the URL to be scraped. (In other words, read the
 
 ```{r set.the.scraping.website}
 #2 
-
+webpage <- read_html("https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2024")
+webpage
 ```
 
 3. The data we want to collect are listed below:
@@ -59,12 +62,27 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r scrape.the.data}
 #3 
+watersys_name <- webpage %>% 
+  html_nodes("div+ table tr:nth-child(1) td:nth-child(2)") %>% 
+  html_text()
 
+PWSID <- webpage%>%
+  html_nodes("td tr:nth-child(1) td:nth-child(5)")%>%
+  html_text()
 
+ownership <- webpage%>%
+  html_nodes("div+ table tr:nth-child(2) td:nth-child(4)")%>%
+  html_text()
+
+MGD_month <- webpage%>%
+  html_nodes("th~ td+ td")%>%
+  html_text()
+  
+MGD_month1 <- paste(MGD_month, collapse = " ")
 ```
 
 
-4. Convert your scraped data into a dataframe. This dataframe should have a column for each of the 4 variables scraped and a row for the month corresponding to the withdrawal data. Also add a Date column that includes your month and year in data format. (Feel free to add a Year column too, if you wish.)
+4. Convert your scraped data into a dataframe. This dataframe should have a column for each of the 4 variables scraped and a row for the month corresponding to the withdrawal data. Also add a Date column that includes your month and year in date format. (Feel free to add a Year column too, if you wish.)
 
 >TIP: Use `rep()` to repeat a value when creating a dataframe.
 
@@ -74,10 +92,22 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r create.a.dataframe.from.scraped.data}
 #4 
+df_withdrawals <- data.frame("Month" = c(1,5,9,2,6,10,3,7,11,4,8,12),
+                             "Year" = rep(2024,12),
+                             "Max_Withdrawals" = as.numeric(MGD_month),
+                             "Ownership" = ownership,
+                             "PWSID" = PWSID,
+                             "Water System Name" = watersys_name)
 
-
+df_withdrawals <- df_withdrawals%>%
+  mutate(Date = my(paste(Month,"-",Year)))
 #5 
-
+ggplot(df_withdrawals,aes(x=Date,y=Max_Withdrawals)) + 
+  geom_line(color = "magenta") + 
+  labs(title = paste("2024 Water usage data for", watersys_name),
+       subtitle = PWSID,
+       y="Max Withdrawal (mgd)",
+       x="Date")
 
 ```
 
@@ -89,9 +119,61 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 
 ```{r construct.a.scraping.function}
-#6. 
+#6.
+the_facility <- '03-92-020'
+the_year <-  2020
+the_base_url <- "https://www.ncwater.org/WUDC/app/LWSP/report.php"
+the_scrape_url <- paste0(the_base_url, '?pwsid=', the_facility, '&year=', the_year)
+the_website <- read_html(the_scrape_url)
+print(the_scrape_url)
+
+watersys_name_tag <- "div+ table tr:nth-child(1) td:nth-child(2)"
+PWSID_tag <- "td tr:nth-child(1) td:nth-child(5)"
+ownership_tag <-"div+ table tr:nth-child(2) td:nth-child(4)"
+MGD_month_tag <- "th~ td+ td"
+
+the_watersys_name <- the_website %>% html_nodes(watersys_name_tag) %>% html_text()
+the_PWSID <- the_website %>%   html_nodes(PWSID_tag) %>%  html_text()
+the_ownership <- the_website %>% html_nodes(ownership_tag) %>% html_text()
+the_MGD_month <- the_website %>% html_nodes(MGD_month_tag) %>% html_text()
+
+df_withdrawals_2 <- data.frame("Month" = c(1,5,9,2,6,10,3,7,11,4,8,12),
+                             "Year" = rep(the_year,12))%>%
+  mutate(Max_Withdrawals = !!as.numeric(the_MGD_month),
+         Ownership = !!the_ownership,
+         PWSID = !!the_PWSID,
+         Date = my(paste(Month,"-",Year)))
 
 
+```
+
+```{r scraping.contd}
+scrape.it <- function(the_year, the_facility){
+  
+the_base_url <- "https://www.ncwater.org/WUDC/app/LWSP/report.php"
+the_scrape_url <- paste0(the_base_url, '?pwsid=', the_facility, '&year=', the_year)
+the_website <- read_html(the_scrape_url)
+print(the_scrape_url)
+
+watersys_name_tag <- "div+ table tr:nth-child(1) td:nth-child(2)"
+PWSID_tag <- "td tr:nth-child(1) td:nth-child(5)"
+ownership_tag <-"div+ table tr:nth-child(2) td:nth-child(4)"
+MGD_month_tag <- "th~ td+ td"
+
+the_watersys_name <- the_website %>% html_nodes(watersys_name_tag) %>% html_text()
+the_PWSID <- the_website %>%   html_nodes(PWSID_tag) %>%  html_text()
+the_ownership <- the_website %>% html_nodes(ownership_tag) %>% html_text()
+the_MGD_month <- the_website %>% html_nodes(MGD_month_tag) %>% html_text()
+
+df_withdrawals_3 <- data.frame("Month" = c(1,5,9,2,6,10,3,7,11,4,8,12),
+                             "Year" = rep(the_year,12))%>%
+  mutate(Max_Withdrawals = !!as.numeric(the_MGD_month),
+         Ownership = !!the_ownership,
+         PWSID = !!the_PWSID,
+         Date = my(paste(Month,"-",Year)))
+
+return(df_withdrawals_3)
+}
 ```
 
 7. Use the function above to extract and plot max daily withdrawals for Durham (PWSID='03-32-010') for each month in 2020. Then show the structure of the dataframe with either the `str()` or the `glimpse()` function. 
@@ -99,14 +181,42 @@ In the code chunk below scrape these values, assigning them to four separate var
 ```{r fetch.and.plot.Durham.2020.data}
 #7 
 
+the_df <- scrape.it(2020,'03-32-010')
+view(the_df)
 
+ggplot(the_df,aes(x=Date,y=Max_Withdrawals)) + 
+  geom_line(color = "magenta") + 
+  labs(title = paste(the_year,"Water usage data for", the_watersys_name),
+       subtitle = the_facility,
+       y="Max Withdrawal (mgd)",
+       x="Date")
+
+str(the_df)
 ```
 
 8. Use the function above to extract data for Cary (PWSID = '03-32-010') in 2020. Combine this data with the Durham data collected above and create a plot that compares Cary's to Durham's water withdrawals.
 
 ```{r fetch.and.plot.Cary.2020.data}
 #8 
+the_df2 <- scrape.it(2020,'03-92-020')
+view(the_df2)
 
+ggplot(the_df2, aes(x=Date,y=Max_Withdrawals)) + 
+  geom_line(color = "magenta") + 
+  labs(title = paste(the_year, "Water usage data for", the_watersys_name),
+       subtitle = the_facility,
+       y="Max Withdrawal (mgd)",
+       x="Date")
+
+str(the_df2)
+
+ggplot() + 
+  geom_line(data = the_df2, aes(x = Date, y = Max_Withdrawals, color = "Cary")) + 
+  geom_line(data = the_df, aes(x = Date, y = Max_Withdrawals, color = "Durham")) + 
+  labs(title = paste(the_year, "Water usage data for Cary and Durham"),
+    y = "Max Withdrawal (mgd)",
+    x = "Date",
+    color = "Water System")
 
 ```
 
@@ -116,11 +226,21 @@ In the code chunk below scrape these values, assigning them to four separate var
 > TIP: See Section 3.2 in the "10_Data_Scraping.Rmd" where we apply "map2()" to iteratively run a function over two inputs. Pipe the output of the map2() function to `bind_rows()` to combine the dataframes into a single one, and use that to construct your plot.
 
 ```{r fetch.and.plot.Cary.multiyear.data }
-#9 
+#9  
+the_facility <- '03-92-020'
+the_years <- c(2018,2019,2020,2021,2022,2023)
 
+dfs_years <- map2(the_years, the_facility, scrape.it)
 
+dfs_years <- bind_rows(dfs_years)
+
+ggplot() + 
+  geom_line(data = dfs_years, aes(x = Date, y = Max_Withdrawals, color = "Cary")) + 
+  labs(title = paste("2018-2023 Water usage data for Cary"),
+    y = "Max Withdrawal (mgd)",
+    x = "Date",
+    color = "Water System")
 ```
 
 Question: Just by looking at the plot (i.e. not running statistics), does Cary have a trend in water usage over time?
-> Answer:
->
+> Answer: By looking at the plot, Cary appears to have a consistent seasonal trend in water usage over time. Since 2022, water usage appears to be less variable and has singular peaks and troughs throughout the year. Before 2022, water use followed a general pattern but had sporatic peaks and drops. 

@@ -19,7 +19,7 @@ library(tidyverse)
 library(lubridate)
 library(here); here()
 
-#install.packages("rvest")
+install.packages("rvest")
 library(rvest)
 
 # Set theme
@@ -107,7 +107,7 @@ In the code chunk below, see if you can extract the Facility Name and Facility T
 
 ```{r scraping.exercise.1}
 the_facility_name <- webpage %>% 
-  html_nodes() %>% 
+  html_nodes("tr:nth-child(2) th+ .left:nth-child(2)") %>% 
   html_text()
 the_facility_name
 
@@ -273,6 +273,8 @@ my_facility = '0004-0001'
 the_dfs <- lapply(X = the_years,
                   FUN = scrape.it,
                   the_facility=my_facility)
+
+help(lapply)
 
 #OR, use purrr's map function
 the_dfs <- map(the_years,scrape.it,the_facility=my_facility)
